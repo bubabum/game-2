@@ -1,13 +1,13 @@
 class Sprite {
-   constructor(frameWidth, frameHeight, frameMap, imgSource, static) {
-      this.frameWidth = frameWidth;
-      this.frameHeight = frameHeight;
+   constructor(options) {
+      this.frameWidth = options.frameWidth;
+      this.frameHeight = options.frameHeight;
       this.img = new Image();
-      this.img.src = imgSource;
-      this.frameMap = frameMap;
+      this.img.src = options.imgSource;
+      this.frameMap = options.frameMap;
       this.currentFrame = 0;
-      this.maxFrames = 15;
-      this.static = static;
+      this.maxFrames = 22;
+      this.static = options.static;
       this.frameElapsed = 0;
       this.frameElapsedBuffer = 5;
    }
