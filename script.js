@@ -5,11 +5,13 @@ canvas.width = 1024;
 canvas.height = 576;
 
 let keyHandler = new KeyHandler();
-let cube = new GameObject({ x: 200, y: 200 });
+let options = { frameWidth: 64, frameHeight: 64, frameMap: {}, imgSource: './img/knight.png', static: false }
+let knight = new Sprite({ frameWidth: 64, frameHeight: 64, frameMap: {}, imgSource: './img/knight.png', static: false });
+console.log(knight);
 
 function animation() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	cube.draw();
+	knight.draw();
 	requestAnimationFrame(animation);
 }
 
