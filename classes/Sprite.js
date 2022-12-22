@@ -1,8 +1,7 @@
 class Sprite {
-	constructor({ position, imgSource, scale = 1, frameRate = 1, frameBuffer = 3, isAnimated = false, animations }) {
+	constructor({ position, imgSource, scale = 1, frameRate = 1, frameBuffer = 3, animations, loop = true }) {
 		this.position = position;
 		this.scale = scale;
-		this.isAnimated = isAnimated;
 		this.animations = animations;
 		this.loaded = false;
 		this.img = new Image();
@@ -12,11 +11,18 @@ class Sprite {
 			this.loaded = true
 		}
 		this.img.src = imgSource;
+		this.loop = loop;
 		this.frameRate = frameRate;
 		this.frameBuffer = frameBuffer;
 		this.currentFrame = 0;
 		this.skippedFrames = 0;
-
+		if (this.animations) {
+			for (let key in this.animations) {
+				const img = new Image()
+				img.src = this.animations[key].imgSource;
+				this.animations[key].img = img;
+			}
+		}
 	}
 	draw() {
 		if (!this.loaded) return
@@ -29,7 +35,7 @@ class Sprite {
 			height: this.img.height,
 		}
 		ctx.drawImage(this.img, cropbox.position.x, cropbox.position.y, cropbox.width, cropbox.height, this.position.x, this.position.y, this.width, this.height);
-		if (this.animated) this.updateFrames();
+		this.updateFrames();
 	}
 	updateFrames() {
 		this.skippedFrames++;
@@ -37,17 +43,22 @@ class Sprite {
 			this.skippedFrames = 0;
 			this.currentFrame++;
 			if (this.currentFrame === this.frameRate) {
-				this.currentFrame = 0;
+				if (this.loop) {
+					this.currentFrame = 0;
+				} else {
+					this.currentFrame = this.frameRate - 1;
+				}
 			}
 		}
 	}
-	switchAnimation(key) {
-		if (this.img === this.animations[key].img) return
-		this.img = this.animations[key].img;
-		this.frameRate = this.animations[key].frameRate;
+	switchAnimation(name) {
+		if (this.img === this.animations[name].img) return
+		this.img = this.animations[name].img;
+		this.frameRate = this.animations[name].frameRate;
+		this.loop = this.animations[name].loop;
 		this.currentFrame = 0;
 	}
-	debug(red = 255, green = 0, blue = 0, opacity = 0.2) {
+	debug(red = 0, green = 255, blue = 0, opacity = 0.2) {
 		ctx.fillStyle = `rgba(${red}, ${green}, ${blue}, ${opacity})`;
 		ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
 	}
