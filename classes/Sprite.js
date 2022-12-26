@@ -8,7 +8,7 @@ class Sprite {
 		this.img.onload = () => {
 			this.width = (this.img.width / this.frameRate) * this.scale;
 			this.height = this.img.height * this.scale;
-			this.loaded = true
+			this.loaded = true;
 		}
 		this.img.src = imgSource;
 		this.loop = loop;
@@ -62,16 +62,13 @@ class Sprite {
 		this.hitbox.position.x = this.position.x + this.hitbox.offset.x;
 		this.hitbox.position.y = this.position.y + this.hitbox.offset.y;
 	}
-	debug(red = 0, green = 255, blue = 0, opacity = 0.2) {
+	debug({ red = 0, green = 255, blue = 0, opacity = 0.2, ctx }) {
 		if (this.camerabox) {
 			ctx.fillStyle = 'rgba(0, 0, 255, 0.2)';
 			ctx.fillRect(this.camerabox.position.x, this.camerabox.position.y, this.camerabox.width, this.camerabox.height);
 		}
 		ctx.fillStyle = `rgba(${red}, ${green}, ${blue}, ${opacity})`;
 		ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
-		// if (this.collisions) {
-		// 	this.collisions.forEach((collision) => collision.debug())
-		// }
 		if (this.hitbox) {
 			ctx.fillStyle = 'rgba(255, 255, 0, 0.5)';
 			ctx.fillRect(this.hitbox.position.x, this.hitbox.position.y, this.hitbox.width, this.hitbox.height);

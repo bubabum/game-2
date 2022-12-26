@@ -1,17 +1,12 @@
-const canvas = document.querySelector('canvas');
-const ctx = canvas.getContext('2d');
-const TILE = 16;
-
-canvas.width = 1024;
-canvas.height = 576;
-
-let level = new Sprite({
+let level = new Level({
 	position: {
 		x: 0,
 		y: 0,
 	},
 	scale: 1,
 	imgSource: './img/map.png',
+	collisionsMap: collisionsLevel1,
+	tile: 16,
 });
 let player = new Player({
 	position: {
@@ -34,10 +29,15 @@ let player = new Player({
 			loop: true,
 		},
 	},
-	collisions: {},
 });
 
-let game = new Game({ player, level, canvas })
+let game = new Game({
+	player,
+	level,
+	width: 1024,
+	height: 576,
+	debug: true,
+});
 
 // const camera = {
 // 	position: {
@@ -46,6 +46,4 @@ let game = new Game({ player, level, canvas })
 // 	},
 // }
 
-console.log(game);
-
-game.animation();
+game.start();
