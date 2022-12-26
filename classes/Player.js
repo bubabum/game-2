@@ -29,7 +29,7 @@ class Player extends Sprite {
 			},
 		}
 	}
-	update() {
+	update(ctx) {
 		if (this.keyHandler.ArrowUp && this.velocity.y === 0) {
 			this.velocity.y = -10;
 		}
@@ -44,7 +44,7 @@ class Player extends Sprite {
 			this.velocity.x = 0;
 			this.switchAnimation('idle');
 		}
-		this.draw();
+		this.draw(ctx);
 		this.position.x += this.velocity.x;
 		this.updateHitbox();
 		this.checkHorizontalCollisions();

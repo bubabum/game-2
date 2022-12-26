@@ -24,7 +24,7 @@ class Sprite {
 			}
 		}
 	}
-	draw() {
+	draw(ctx) {
 		if (!this.loaded) return
 		const cropbox = {
 			position: {

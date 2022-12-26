@@ -5,15 +5,13 @@ const TILE = 16;
 canvas.width = 1024;
 canvas.height = 576;
 
-let background = new Background({
+let level = new Sprite({
 	position: {
 		x: 0,
 		y: 0,
 	},
 	scale: 1,
 	imgSource: './img/map.png',
-	collisionsMap: collisionsLevel1,
-	tile: TILE,
 });
 let player = new Player({
 	position: {
@@ -36,9 +34,10 @@ let player = new Player({
 			loop: true,
 		},
 	},
-	collisions: background.collisionsMap,
+	collisions: {},
 });
-console.log(background.collisionsMap);
+
+let game = new Game({ player, level, canvas })
 
 // const camera = {
 // 	position: {
@@ -47,21 +46,6 @@ console.log(background.collisionsMap);
 // 	},
 // }
 
-function animation() {
-	ctx.imageSmoothingEnabled = false;
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	ctx.save();
-	//ctx.scale(2, 2);
-	//ctx.translate(camera.position.x, camera.position.y);
-	background.draw();
-	player.update();
-	// player.collisions.forEach((block) => {
-	// 	ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
-	// 	ctx.fillRect(block.position.x, block.position.y, block.width, block.height)
-	// })
-	player.debug();
-	ctx.restore();
-	requestAnimationFrame(animation);
-}
+console.log(game);
 
-animation();
+game.animation();
