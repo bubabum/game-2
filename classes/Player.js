@@ -5,7 +5,7 @@ class Player extends Sprite {
 			x: 0,
 			y: 0,
 		}
-		this.gravity = 0.5;
+		this.gravity = 0.3;
 		this.keyHandler = new KeyHandler();
 		this.hitbox = {
 			width: 18,
@@ -20,8 +20,8 @@ class Player extends Sprite {
 			},
 		}
 		this.camerabox = {
-			width: 400,
-			height: 200,
+			width: 800,
+			height: 400,
 			position: {
 				x: this.position.x,
 				y: this.position.y,
@@ -30,13 +30,13 @@ class Player extends Sprite {
 	}
 	update(ctx, level) {
 		if (this.keyHandler.ArrowUp && this.velocity.y === 0) {
-			this.velocity.y = -10;
+			this.velocity.y = -7;
 		}
 		if (this.keyHandler.ArrowLeft) {
-			this.velocity.x = -3;
+			this.velocity.x = -2;
 		}
 		if (this.keyHandler.ArrowRight) {
-			this.velocity.x = 3;
+			this.velocity.x = 2;
 			this.switchAnimation('run');
 		}
 		if (!this.keyHandler.ArrowLeft && !this.keyHandler.ArrowRight) {
@@ -47,21 +47,26 @@ class Player extends Sprite {
 		this.position.x += this.velocity.x;
 		this.updateHitbox();
 		if (level.collisionsMap) this.checkHorizontalCollisions(level.collisionsMap);
-		this.uplyGravity();
+		this.uplyGravity(level);
 		this.updateHitbox();
 		if (level.collisionsMap) this.checkVerticalCollisions(level.collisionsMap);
 		this.updateHitbox();
 		this.updateCamerabox();
 	}
-	uplyGravity() {
+	uplyGravity(level) {
 		this.velocity.y += this.gravity;
 		this.position.y += this.velocity.y;
-		if (this.position.y < 0) {
-			this.position.y = 0;
-			this.velocity.y = 0;
+		if (this.position.x + this.hitbox.offset.x < 0) {
+			this.position.x = -this.hitbox.offset.x + 0.01;
 		}
-		if (this.position.x < 0) {
-			this.position.x = 0;
+		if (this.hitbox.position.x + this.hitbox.width > level.width) {
+			this.position.x = level.width - this.hitbox.offset.x - this.hitbox.width - 0.01;
+		}
+		if (this.position.y + this.hitbox.offset.y < 0) {
+			this.position.y = -this.hitbox.offset.y + 0.01;
+		}
+		if (this.hitbox.position.y + this.hitbox.height > level.height) {
+			this.position.y = level.height - this.hitbox.offset.y - this.hitbox.height - 0.01;
 		}
 	}
 	checkCollisions(collisionObject) {
