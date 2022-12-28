@@ -4,19 +4,19 @@ let level = new Level({
 		y: 0,
 	},
 	scale: 1,
-	imgSource: './img/map.png',
+	imgSource: './img/map3.png',
 	collisionsMap: collisionsLevel1,
 	tile: 16,
 });
 let player = new Player({
 	position: {
-		x: 0,
-		y: 0,
+		x: 20,
+		y: 10,
 	},
 	imgSource: './img/knight.png',
 	isAnimated: true,
 	frameRate: 15,
-	scale: 1,
+	scale: 0.5,
 	animations: {
 		idle: {
 			imgSource: './img/knight.png',
@@ -36,7 +36,7 @@ let game = new Game({
 	level,
 	width: 1024,
 	height: 576,
-	debug: true,
+	debug: false,
 });
 
 // const camera = {

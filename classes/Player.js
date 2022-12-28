@@ -8,8 +8,8 @@ class Player extends Sprite {
 		this.gravity = 0.3;
 		this.keyHandler = new KeyHandler();
 		this.hitbox = {
-			width: 18,
-			height: 30,
+			width: 18 * this.scale,
+			height: 30 * this.scale,
 			offset: {
 				x: 25,
 				y: 14,
