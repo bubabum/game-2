@@ -24,6 +24,11 @@ let player = new Player({
 			frameRate: 4,
 			loop: true,
 		},
+		idleLeft: {
+			imgSource: './img/player_idle_left.png',
+			frameRate: 4,
+			loop: true,
+		},
 		run: {
 			imgSource: './img/player_run.png',
 			frameRate: 8,
@@ -37,6 +42,21 @@ let player = new Player({
 		jump: {
 			imgSource: './img/player_jump.png',
 			frameRate: 4,
+			loop: false,
+		},
+		jumpLeft: {
+			imgSource: './img/player_jump_left.png',
+			frameRate: 4,
+			loop: false,
+		},
+		falling: {
+			imgSource: './img/player_falling.png',
+			frameRate: 3,
+			loop: false,
+		},
+		fallingLeft: {
+			imgSource: './img/player_falling.png',
+			frameRate: 3,
 			loop: false,
 		},
 	},

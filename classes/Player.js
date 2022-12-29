@@ -6,7 +6,7 @@ class Player extends Sprite {
 			y: 0,
 		}
 		this.gravity = 0.3;
-		this.keyHandler = new KeyHandler();
+		this.input = new KeyHandler();
 		this.hitbox = {
 			width: 20 * this.scale,
 			height: 50 * this.scale,
@@ -27,33 +27,39 @@ class Player extends Sprite {
 				y: this.position.y,
 			},
 		}
-		this.initKeys();
+		this.states = [new Idle(this), new IdleLeft(this), new Running(this), new RunningLeft(this), new Jumping(this), new JumpingLeft(this), new Falling(this), new FallingLeft(this)];
+		this.currentState = this.states[0];
+		this.currentState.enter();
 	}
-	initKeys() {
-		window.addEventListener('keydown', (event) => {
-			if (event.code === 'ArrowUp' && this.velocity.y <= 0) {
-				this.velocity.y = -7;
-				this.switchAnimation('jump');
-			}
-			if (event.code === 'ArrowRight') {
-				this.velocity.x = 2;
-				this.switchAnimation('run');
-			}
-			if (event.code === 'ArrowLeft') {
-				this.velocity.x = -2;
-				this.switchAnimation('runLeft');
-			}
-		})
-		window.addEventListener('keyup', (event) => {
-			if (event.code === 'ArrowRight') {
-				this.velocity.x = 0;
-				this.switchAnimation('idle');
-			}
-			if (event.code === 'ArrowLeft') {
-				this.velocity.x = 0;
-				this.switchAnimation('idle');
-			}
-		})
+	// initKeys() {
+	// 	window.addEventListener('keydown', (event) => {
+	// 		if (event.code === 'ArrowUp' && this.velocity.y <= 0) {
+	// 			this.velocity.y = -7;
+	// 			this.switchAnimation('jump');
+	// 		}
+	// 		if (event.code === 'ArrowRight') {
+	// 			this.velocity.x = 2;
+	// 			this.switchAnimation('run');
+	// 		}
+	// 		if (event.code === 'ArrowLeft') {
+	// 			this.velocity.x = -2;
+	// 			this.switchAnimation('runLeft');
+	// 		}
+	// 	})
+	// 	window.addEventListener('keyup', (event) => {
+	// 		if (event.code === 'ArrowRight') {
+	// 			this.velocity.x = 0;
+	// 			this.switchAnimation('idle');
+	// 		}
+	// 		if (event.code === 'ArrowLeft') {
+	// 			this.velocity.x = 0;
+	// 			this.switchAnimation('idle');
+	// 		}
+	// 	})
+	// }
+	setState(state) {
+		this.currentState = this.states[state];
+		this.currentState.enter();
 	}
 	update(ctx, level) {
 		//if (this.keyHandler.ArrowUp && this.velocity.y === 0) {
@@ -73,6 +79,7 @@ class Player extends Sprite {
 		// 	this.velocity.x = 0;
 		// 	this.switchAnimation('idle');
 		// }
+		this.currentState.handleInput(this.input);
 		this.updateHitbox();
 		this.updateCamerabox();
 		this.draw(ctx);
