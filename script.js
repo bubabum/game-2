@@ -4,27 +4,32 @@ let level = new Level({
 		y: 0,
 	},
 	scale: 1,
-	imgSource: './img/map3.png',
+	imgSource: './img/map.png',
 	collisionsMap: collisionsLevel1,
-	tile: 16,
+	tile: 32,
 });
 let player = new Player({
 	position: {
 		x: 20,
 		y: 10,
 	},
-	imgSource: './img/knight.png',
+	imgSource: './img/char.png',
 	isAnimated: true,
-	frameRate: 15,
-	scale: 0.5,
+	frameRate: 8,
+	scale: 1,
 	animations: {
 		idle: {
-			imgSource: './img/knight.png',
-			frameRate: 15,
+			imgSource: './img/char.png',
+			frameRate: 8,
 			loop: true,
 		},
 		run: {
-			imgSource: './img/knight3.png',
+			imgSource: './img/player_run.png',
+			frameRate: 8,
+			loop: true,
+		},
+		runLeft: {
+			imgSource: './img/player_run_left.png',
 			frameRate: 8,
 			loop: true,
 		},

@@ -9,10 +9,10 @@ class Player extends Sprite {
 		this.keyHandler = new KeyHandler();
 		this.hitbox = {
 			width: 18 * this.scale,
-			height: 30 * this.scale,
+			height: 47 * this.scale,
 			offset: {
-				x: 25,
-				y: 14,
+				x: 66 * this.scale,
+				y: 27 * this.scale,
 			},
 			position: {
 				x: this.position.x,
@@ -34,6 +34,7 @@ class Player extends Sprite {
 		}
 		if (this.keyHandler.ArrowLeft) {
 			this.velocity.x = -2;
+			this.switchAnimation('runLeft');
 		}
 		if (this.keyHandler.ArrowRight) {
 			this.velocity.x = 2;
@@ -43,6 +44,53 @@ class Player extends Sprite {
 			this.velocity.x = 0;
 			this.switchAnimation('idle');
 		}
+		if (this.keyHandler.Space) {
+			this.fireball = {
+				position: {
+					x: this.hitbox.position.x + 10,
+					y: this.hitbox.position.y + 20,
+				},
+				width: 30,
+				height: 30,
+				particals: [],
+			}
+		}
+		if (this.fireball) {
+			this.fireball.position.x += 10;
+			ctx.save();
+			ctx.beginPath();
+			ctx.filter = "blur(32px)";
+			ctx.fillStyle = `rgba(255, 255, 0, 0.8)`;
+			ctx.arc(this.fireball.position.x, this.fireball.position.y, 20, 0, 2 * Math.PI, false);
+			ctx.fill();
+			ctx.restore();
+			for (let i = 0; i < 30; i++) {
+				this.fireball.particals.push({
+					x: this.fireball.position.x - Math.random() * 10,
+					y: this.fireball.position.y - Math.random() * 10,
+					r: Math.random() * 3,
+					h: Math.random() * 20 + 40,
+				})
+			}
+			this.fireball.particals.forEach((partical, index) => {
+				ctx.save();
+				ctx.beginPath();
+				//ctx.filter = "blur(1px)";
+				ctx.fillStyle = `hsl(${partical.h}, ${Math.random() * 5 + 95}%, ${Math.random() * 20 + 40}%)`;
+				ctx.arc(partical.x, partical.y, partical.r, 0, 2 * Math.PI, false);
+				ctx.fill();
+				ctx.restore();
+				partical.r -= 0.3;
+				partical.h -= 10;
+				if (partical.h < 0) partical.h = 0;
+				if (partical.r < 0) this.fireball.particals.splice(index, 1)
+			})
+			if (this.fireball.position.x > 700) {
+				this.fireball = null;
+			}
+		}
+		this.updateHitbox();
+		this.updateCamerabox();
 		this.draw(ctx);
 		this.position.x += this.velocity.x;
 		this.updateHitbox();
@@ -50,8 +98,6 @@ class Player extends Sprite {
 		this.uplyGravity(level);
 		this.updateHitbox();
 		if (level.collisionsMap) this.checkVerticalCollisions(level.collisionsMap);
-		this.updateHitbox();
-		this.updateCamerabox();
 	}
 	uplyGravity(level) {
 		this.velocity.y += this.gravity;
