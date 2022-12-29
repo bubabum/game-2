@@ -13,14 +13,15 @@ let player = new Player({
 		x: 20,
 		y: 10,
 	},
-	imgSource: './img/char.png',
+	imgSource: './img/player_idle.png',
 	isAnimated: true,
-	frameRate: 8,
+	frameRate: 4,
+	frameBuffer: 7,
 	scale: 1,
 	animations: {
 		idle: {
-			imgSource: './img/char.png',
-			frameRate: 8,
+			imgSource: './img/player_idle.png',
+			frameRate: 4,
 			loop: true,
 		},
 		run: {
@@ -32,6 +33,11 @@ let player = new Player({
 			imgSource: './img/player_run_left.png',
 			frameRate: 8,
 			loop: true,
+		},
+		jump: {
+			imgSource: './img/player_jump.png',
+			frameRate: 4,
+			loop: false,
 		},
 	},
 });
