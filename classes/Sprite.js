@@ -56,7 +56,9 @@ class Sprite {
 		this.img = this.animations[name].img;
 		this.frameRate = this.animations[name].frameRate;
 		this.loop = this.animations[name].loop;
+		if (this.animations[name].frameBuffer) this.frameBuffer = this.animations[name].frameBuffer;
 		this.currentFrame = 0;
+		this.skippedFrames = 0;
 	}
 	updateHitbox() {
 		this.hitbox.position.x = this.position.x + this.hitbox.offset.x;
