@@ -1,11 +1,12 @@
 class Level extends Sprite {
-	constructor({ position, imgSource, scale = 1, frameRate = 1, frameBuffer = 3, animations, loop = true, collisionsMap, tile }) {
+	constructor({ position, imgSource, scale = 1, frameRate = 1, frameBuffer = 3, animations, loop = true, collisionsMap, platformsMap, tile }) {
 		super({ position, imgSource, scale, frameRate, frameBuffer, animations, loop });
 		this.img.onload = () => {
 			this.width = (this.img.width / this.frameRate) * this.scale;
 			this.height = this.img.height * this.scale;
 			this.loaded = true;
 			this.collisionsMap = this.parseCollisionsMap(collisionsMap);
+			this.platformsMap = this.parseCollisionsMap(platformsMap);
 		}
 		this.tile = tile;
 	}

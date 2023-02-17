@@ -34,7 +34,9 @@ class Sprite {
 			width: this.img.width / this.frameRate,
 			height: this.img.height,
 		}
+		ctx.save();
 		ctx.drawImage(this.img, cropbox.position.x, cropbox.position.y, cropbox.width, cropbox.height, this.position.x, this.position.y, this.width, this.height);
+		ctx.restore();
 		this.updateFrames();
 	}
 	updateFrames() {
