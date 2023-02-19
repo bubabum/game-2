@@ -14,6 +14,6 @@ class KeyHandler {
 		})
 	}
 	debug() {
-		console.log(this);
+		//console.log(this);
 	}
 }

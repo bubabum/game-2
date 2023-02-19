@@ -35,7 +35,10 @@ class Sprite {
 			height: this.img.height,
 		}
 		ctx.save();
-		ctx.drawImage(this.img, cropbox.position.x, cropbox.position.y, cropbox.width, cropbox.height, this.position.x, this.position.y, this.width, this.height);
+		let k = 1;
+		if (this.isLeftOriented) k = -1;
+		ctx.scale(k, 1);
+		ctx.drawImage(this.img, cropbox.position.x, cropbox.position.y, cropbox.width, cropbox.height, k * this.position.x, this.position.y, k * this.width, this.height);
 		ctx.restore();
 		this.updateFrames();
 	}
@@ -63,6 +66,7 @@ class Sprite {
 		this.skippedFrames = 0;
 	}
 	updateHitbox() {
+		this.hitbox.offset.x = this.isLeftOriented ? this.hitbox.offset.leftOrientedX : this.hitbox.offset.rightOrientedX;
 		this.hitbox.position.x = this.position.x + this.hitbox.offset.x;
 		this.hitbox.position.y = this.position.y + this.hitbox.offset.y;
 	}

@@ -4,29 +4,31 @@ class Level extends Sprite {
 		this.img.onload = () => {
 			this.width = (this.img.width / this.frameRate) * this.scale;
 			this.height = this.img.height * this.scale;
+			this.collisionsMap = this.parseCollisionsMap({ map: collisionsMap });
+			this.platformsMap = this.parseCollisionsMap({ map: platformsMap, height: 10 });
 			this.loaded = true;
-			this.collisionsMap = this.parseCollisionsMap(collisionsMap);
-			this.platformsMap = this.parseCollisionsMap(platformsMap);
 		}
+		this.collisionsMap = [];
+		this.platformsMap = [];
 		this.tile = tile;
 	}
-	parseCollisionsMap(collisionsMap) {
+	parseCollisionsMap({ map, tile = this.tile, height = this.tile }) {
 		const step = this.img.width / this.tile;
-		let collisionsMap2D = []
-		for (let i = 0; i < collisionsMap.length; i += step) {
-			collisionsMap2D.push(collisionsLevel1.slice(i, i + step));
+		let map2D = []
+		for (let i = 0; i < map.length; i += step) {
+			map2D.push(map.slice(i, i + step));
 		}
 		let collisionObjects = []
-		collisionsMap2D.forEach((row, y) => {
+		map2D.forEach((row, y) => {
 			row.forEach((block, x) => {
 				if (block > 0) {
 					collisionObjects.push({
 						position: {
-							x: x * this.tile,
-							y: y * this.tile,
+							x: x * tile,
+							y: y * tile,
 						},
-						width: this.tile,
-						height: this.tile,
+						width: tile,
+						height: height,
 					})
 				}
 			})
@@ -38,6 +40,12 @@ class Level extends Sprite {
 			this.collisionsMap.forEach((collisionBlock) => {
 				ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
 				ctx.fillRect(collisionBlock.position.x, collisionBlock.position.y, collisionBlock.width, collisionBlock.height);
+			})
+		}
+		if (this.platformsMap) {
+			this.platformsMap.forEach((collisionPlatform) => {
+				ctx.fillStyle = 'rgba(255, 100, 0, 0.5)';
+				ctx.fillRect(collisionPlatform.position.x, collisionPlatform.position.y, collisionPlatform.width, collisionPlatform.height);
 			})
 		}
 	}

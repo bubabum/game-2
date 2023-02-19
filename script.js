@@ -26,32 +26,14 @@ let player = new Player({
 			frameBuffer: 4,
 			loop: true,
 		},
-		idleLeft: {
-			imgSource: './img/player_idle_left.png',
-			frameRate: 26,
-			frameBuffer: 4,
-			loop: true,
-		},
 		run: {
 			imgSource: './img/player_run.png',
 			frameRate: 14,
 			frameBuffer: 3,
 			loop: true,
 		},
-		runLeft: {
-			imgSource: './img/player_run_left.png',
-			frameRate: 14,
-			frameBuffer: 4,
-			loop: true,
-		},
 		jump: {
 			imgSource: './img/player_jump.png',
-			frameRate: 4,
-			frameBuffer: 7,
-			loop: false,
-		},
-		jumpLeft: {
-			imgSource: './img/player_jump_left.png',
 			frameRate: 4,
 			frameBuffer: 7,
 			loop: false,
@@ -62,20 +44,8 @@ let player = new Player({
 			frameBuffer: 7,
 			loop: false,
 		},
-		fallingLeft: {
-			imgSource: './img/player_falling_left.png',
-			frameRate: 2,
-			frameBuffer: 7,
-			loop: false,
-		},
 		landing: {
 			imgSource: './img/player_landing.png',
-			frameRate: 3,
-			frameBuffer: 1,
-			loop: false,
-		},
-		landingLeft: {
-			imgSource: './img/player_landing_left.png',
 			frameRate: 3,
 			frameBuffer: 1,
 			loop: false,
@@ -88,7 +58,6 @@ let game = new Game({
 	level,
 	width: 1024,
 	height: 576,
-	debug: false,
 });
 
 // const camera = {

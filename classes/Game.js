@@ -1,18 +1,21 @@
 class Game {
-	constructor({ player, level, width, height, debug = false }) {
+	constructor({ player, level, width, height, debuggingMode = false }) {
 		this.player = player;
 		this.level = level;
 		this.width = width;
 		this.height = height;
-		this.debug = debug;
+		this.debuggingMode = debuggingMode;
 		this.camera = {
 			position: {
 				x: 0,
 				y: 0,
 			}
 		}
+		window.addEventListener('keydown', (event) => {
+			if (event.code === 'Space') this.debuggingMode = !this.debuggingMode;
+		})
 	}
-	debugGame() {
+	debug() {
 		this.player.debug({ ctx: this.ctx });
 		this.level.debug({ ctx: this.ctx });
 	}
@@ -64,7 +67,7 @@ class Game {
 		this.level.draw(this.ctx);
 		this.player.update(this.ctx, this.level);
 		this.update();
-		if (this.debug) this.debugGame();
+		if (this.debuggingMode) this.debug();
 		this.ctx.restore();
 		requestAnimationFrame(() => this.animation());
 	}

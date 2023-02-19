@@ -1,21 +1,21 @@
 const states = {
 	IDLE: 0,
-	IDLE_LEFT: 1,
-	RUNNING: 2,
-	RUNNING_LEFT: 3,
-	JUMPING: 4,
-	JUMPING_LEFT: 5,
-	FALLING: 6,
-	FALLING_LEFT: 7,
-	LANDING: 8,
-	LANDING_LEFT: 9,
+	RUNNING: 1,
+	JUMPING: 2,
+	FALLING: 3,
+	LANDING: 4,
 }
-const VELOCITY_Y = -10;
+const JUMPING_VELOCITY = -6.3;
+const X_VELOCITY = 2.5;
 
 class State {
 	constructor(state, player) {
 		this.state = state;
 		this.player = player;
+	}
+	setOrientation(input) {
+		if (input.ArrowRight && !input.ArrowLeft) this.player.isLeftOriented = false;
+		if (!input.ArrowRight && input.ArrowLeft) this.player.isLeftOriented = true;
 	}
 }
 
@@ -26,34 +26,14 @@ class Idle extends State {
 	enter() {
 		this.player.switchAnimation('idle');
 		this.player.velocity.x = 0;
-		this.player.hitbox.offset.x = 15;
 	}
 	handleInput(input) {
-		if (input.ArrowRight) this.player.setState(states.RUNNING);
-		if (input.ArrowLeft) this.player.setState(states.RUNNING_LEFT);
+		if (input.ArrowRight || input.ArrowLeft) this.player.setState(states.RUNNING);
 		if (input.ArrowUp) {
-			this.player.velocity.y = VELOCITY_Y;
+			this.player.velocity.y = JUMPING_VELOCITY;
 			this.player.setState(states.JUMPING)
 		};
-	}
-}
-
-class IdleLeft extends State {
-	constructor(player) {
-		super('IDLE_LEFT', player);
-	}
-	enter() {
-		this.player.switchAnimation('idleLeft');
-		this.player.velocity.x = 0;
-		this.player.hitbox.offset.x = 7;
-	}
-	handleInput(input) {
-		if (input.ArrowRight) this.player.setState(states.RUNNING);
-		if (input.ArrowLeft) this.player.setState(states.RUNNING_LEFT);
-		if (input.ArrowUp) {
-			this.player.velocity.y = VELOCITY_Y;
-			this.player.setState(states.JUMPING_LEFT)
-		};
+		if (this.player.velocity.y > 0) this.player.setState(states.FALLING);
 	}
 }
 
@@ -63,37 +43,15 @@ class Running extends State {
 	}
 	enter() {
 		this.player.switchAnimation('run');
-		this.player.velocity.x = 2;
-		this.player.hitbox.offset.x = 15;
 	}
 	handleInput(input) {
-		if (!input.ArrowRight) {
-			this.player.setState(states.IDLE);
-		}
+		if (!input.ArrowRight && !input.ArrowLeft) this.player.setState(states.IDLE);
+		if (input.ArrowRight || input.ArrowLeft) this.player.velocity.x = (this.player.isLeftOriented ? -1 : 1) * X_VELOCITY;
 		if (input.ArrowUp) {
-			this.player.velocity.y = VELOCITY_Y;
+			this.player.velocity.y = JUMPING_VELOCITY;
 			this.player.setState(states.JUMPING)
 		};
-	}
-}
-
-class RunningLeft extends State {
-	constructor(player) {
-		super('RUNNING_LEFT', player);
-	}
-	enter() {
-		this.player.switchAnimation('runLeft');
-		this.player.velocity.x = -2;
-		this.player.hitbox.offset.x = 7;
-	}
-	handleInput(input) {
-		if (!input.ArrowLeft) {
-			this.player.setState(states.IDLE_LEFT);
-		}
-		if (input.ArrowUp) {
-			this.player.velocity.y = VELOCITY_Y;
-			this.player.setState(states.JUMPING_LEFT)
-		};
+		if (this.player.velocity.y > 0) this.player.setState(states.FALLING);
 	}
 }
 
@@ -103,27 +61,11 @@ class Jumping extends State {
 	}
 	enter() {
 		this.player.switchAnimation('jump');
-		this.player.hitbox.offset.x = 15;
 	}
 	handleInput(input) {
+		this.player.velocity.x = 0;
+		if (input.ArrowRight || input.ArrowLeft) this.player.velocity.x = (this.player.isLeftOriented ? -1 : 1) * X_VELOCITY;
 		if (this.player.velocity.y >= 0) this.player.setState(states.FALLING);
-		if (input.ArrowRight) this.player.velocity.x = 2;
-		if (input.ArrowLeft) this.player.setState(states.JUMPING_LEFT);
-	}
-}
-
-class JumpingLeft extends State {
-	constructor(player) {
-		super('JUMPING_LEFT', player);
-	}
-	enter() {
-		this.player.switchAnimation('jumpLeft');
-		this.player.hitbox.offset.x = 7;
-	}
-	handleInput(input) {
-		if (this.player.velocity.y >= 0) this.player.setState(states.FALLING_LEFT);
-		if (input.ArrowRight) this.player.setState(states.JUMPING);
-		if (input.ArrowLeft) this.player.velocity.x = -2;
 	}
 }
 
@@ -133,27 +75,11 @@ class Falling extends State {
 	}
 	enter() {
 		this.player.switchAnimation('falling');
-		this.player.hitbox.offset.x = 15;
 	}
 	handleInput(input) {
 		if (this.player.velocity.y === 0) this.player.setState(states.LANDING);
-		if (input.ArrowRight) this.player.velocity.x = 2;
-		if (input.ArrowLeft) this.player.setState(states.FALLING_LEFT);
-	}
-}
-
-class FallingLeft extends State {
-	constructor(player) {
-		super('FALLING_LEFT', player);
-	}
-	enter() {
-		this.player.switchAnimation('fallingLeft');
-		this.player.hitbox.offset.x = 7;
-	}
-	handleInput(input) {
-		if (this.player.velocity.y === 0) this.player.setState(states.LANDING_LEFT);
-		if (input.ArrowRight) this.player.setState(states.FALLING);
-		if (input.ArrowLeft) this.player.velocity.x = -2;
+		this.player.velocity.x = 0;
+		if (input.ArrowRight || input.ArrowLeft) this.player.velocity.x = (this.player.isLeftOriented ? -1 : 1) * X_VELOCITY;
 	}
 }
 
@@ -164,18 +90,6 @@ class Landing extends State {
 	enter() {
 		this.player.switchAnimation('landing');
 		setTimeout(() => this.player.setState(states.IDLE), 50);
-	}
-	handleInput(input) {
-	}
-}
-
-class LandingLeft extends State {
-	constructor(player) {
-		super('LANDING_LEFT', player);
-	}
-	enter() {
-		this.player.switchAnimation('landingLeft');
-		setTimeout(() => this.player.setState(states.IDLE_LEFT), 50);
 	}
 	handleInput(input) {
 	}

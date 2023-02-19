@@ -5,13 +5,16 @@ class Player extends Sprite {
 			x: 0,
 			y: 0,
 		}
-		this.gravity = 0.3;
+		this.gravity = 0.15;
+		this.isLeftOriented = false;
 		this.input = new KeyHandler();
 		this.hitbox = {
-			width: 36 * this.scale,
+			width: 26 * this.scale,
 			height: 50 * this.scale,
 			offset: {
-				x: 15 * this.scale,
+				leftOrientedX: 12,
+				rightOrientedX: 20,
+				x: 20 * this.scale,
 				y: 8 * this.scale,
 			},
 			position: {
@@ -29,15 +32,10 @@ class Player extends Sprite {
 		}
 		this.states = [
 			new Idle(this),
-			new IdleLeft(this),
 			new Running(this),
-			new RunningLeft(this),
 			new Jumping(this),
-			new JumpingLeft(this),
 			new Falling(this),
-			new FallingLeft(this),
 			new Landing(this),
-			new LandingLeft(this),
 		];
 		this.currentState = this.states[0];
 		this.currentState.enter();
@@ -47,17 +45,17 @@ class Player extends Sprite {
 		this.currentState.enter();
 	}
 	update(ctx, level) {
+		this.currentState.setOrientation(this.input);
 		this.currentState.handleInput(this.input);
 		this.updateHitbox();
 		this.updateCamerabox();
 		this.draw(ctx);
 		this.position.x += this.velocity.x;
 		this.updateHitbox();
-		if (level.collisionsMap) this.checkHorizontalCollisions(level.collisionsMap);
+		this.checkHorizontalCollisions(level.collisionsMap);
 		this.uplyGravity(level);
 		this.updateHitbox();
-		if (level.collisionsMap) this.checkVerticalCollisions(level.collisionsMap);
-		if (level.platformsMap) this.checkVerticalCollisions(level.platformsMap);
+		this.checkVerticalCollisions(level.collisionsMap, level.platformsMap);
 	}
 	uplyGravity(level) {
 		this.velocity.y += this.gravity;
@@ -83,6 +81,14 @@ class Player extends Sprite {
 			this.hitbox.position.y <= collisionObject.position.y + collisionObject.height
 		)
 	}
+	checkPlatformCollisions(collisionObject) {
+		return (
+			this.hitbox.position.x <= collisionObject.position.x + collisionObject.width &&
+			this.hitbox.position.x + this.hitbox.width >= collisionObject.position.x &&
+			this.hitbox.position.y + this.hitbox.height >= collisionObject.position.y &&
+			this.hitbox.position.y + this.hitbox.height <= collisionObject.position.y + collisionObject.height
+		)
+	}
 	checkHorizontalCollisions(collisionsMap) {
 		for (let i = 0; i < collisionsMap.length; i++) {
 			if (this.checkCollisions(collisionsMap[i])) {
@@ -97,16 +103,25 @@ class Player extends Sprite {
 			}
 		}
 	}
-	checkVerticalCollisions(collisionsMap) {
-		for (let i = 0; i < collisionsMap.length; i++) {
-			if (this.checkCollisions(collisionsMap[i])) {
+	checkVerticalCollisions(collisionBlocks, collisionPlatforms) {
+		for (let i = 0; i < collisionBlocks.length; i++) {
+			if (this.checkCollisions(collisionBlocks[i])) {
 				if (this.velocity.y > 0) {
-					this.position.y = collisionsMap[i].position.y - this.hitbox.height - this.hitbox.offset.y - 0.01;
+					this.position.y = collisionBlocks[i].position.y - this.hitbox.height - this.hitbox.offset.y - 0.01;
 					this.velocity.y = 0;
 					break
 				}
 				if (this.velocity.y < 0) {
-					this.position.y = collisionsMap[i].position.y + collisionsMap[i].height - this.hitbox.offset.y - 0.01;
+					this.position.y = collisionBlocks[i].position.y + collisionBlocks[i].height - this.hitbox.offset.y - 0.01;
+					this.velocity.y = 0;
+					break
+				}
+			}
+		}
+		for (let i = 0; i < collisionPlatforms.length; i++) {
+			if (this.checkPlatformCollisions(collisionPlatforms[i])) {
+				if (this.velocity.y > 0) {
+					this.position.y = collisionPlatforms[i].position.y - this.hitbox.height - this.hitbox.offset.y - 0.01;
 					this.velocity.y = 0;
 					break
 				}
